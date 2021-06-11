@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { All } from "./components/All";
+import { Todo } from "./components/Todo";
+import { End } from "./components/End";
+import { useState } from "react";
+
 
 function App() {
+  const [tab, setTab] = useState('all')
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <h1>Hello React</h1>
+      <header>
+        <ul>
+          <li onClick={() => {setTab('all')}}>すべて</li>
+          <li onClick={() => {setTab('todo')}}>作業中</li>
+          <li onClick={() => {setTab('end')}}>完了</li>
+        </ul>
       </header>
+      <hr />
+      {
+        (() => {
+          if (tab === 'all') {
+            return <All />
+          } if (tab === 'todo') {
+            return <Todo />
+          } else {
+            return <End />
+          }
+        })()
+      }
     </div>
   );
 }
