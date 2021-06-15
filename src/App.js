@@ -4,16 +4,14 @@ import { End } from "./components/End";
 import { useState } from "react";
 
 function App() {
+  // タブ切り替え
   const [tab, setTab] = useState("all");
 
+  // 追加機能　
   const [inputTodo, setInputTodo] = useState("");
-  const [incompleteTodos, setIncompleteTodos] = useState(["test1", "test2"]);
-  const [completeTodos, setCompleteTodos] = useState(["test3", "test4"]);
-
   const onChangeInputTodo = (e) => {
     setInputTodo(e.target.value);
   };
-
   const onClickAdd = (event) => {
     if (inputTodo === "") return;
     const newTodos = [...incompleteTodos, inputTodo];
@@ -21,60 +19,88 @@ function App() {
     setInputTodo("");
     event.preventDefault();
   };
+    // 作業中
+  const [incompleteTodos, setIncompleteTodos] = useState(["test1", "test2"]);
+    // 完了
+  const [completeTodos, setCompleteTodos] = useState(["test3", "test4"]);
+    // 削除
+  const onClickDelete = (i) => {
+    const newTodos = [...incompleteTodos];
+    newTodos.splice(i, 1);
+    setIncompleteTodos(newTodos);
+  };
+  
+  // ラジオボタン実装
+  const [val, setVal] = useState('all');
+  const handleChange = e => setVal(e.target.value);
 
-  // const onClickDelete = (i) => {
-  //   const newTodos = [...incompleteTodos];
-  //   newTodos.splice(i, 1);
-  //   setIncompleteTodos(newTodos);
-  // };
+  
 
-  // const onClickComplete = (i) => {
-  //   const newIncompleteTodos = [...incompleteTodos];
-  //   const newCompleteTodos = [...completeTodos, incompleteTodos[i]];
+  // 作業中・完了切り替え
+  const onClickComplete = (i) => {
+    const newIncompleteTodos = [...incompleteTodos];
+    const newCompleteTodos = [...completeTodos, incompleteTodos[i]];
 
-  //   newIncompleteTodos.splice(i, 1);
+    newIncompleteTodos.splice(i, 1);
 
-  //   setCompleteTodos(newCompleteTodos);
-  //   setIncompleteTodos(newIncompleteTodos);
-  // };
+    setCompleteTodos(newCompleteTodos);
+    setIncompleteTodos(newIncompleteTodos);
+  };
 
-  // const onClickReturn = (i) => {
-  //   const newIncompleteTodos = [...incompleteTodos, completeTodos[i]];
-  //   const newCompleteTodos = [...completeTodos];
+  const onClickReturn = (i) => {
+    const newIncompleteTodos = [...incompleteTodos, completeTodos[i]];
+    const newCompleteTodos = [...completeTodos];
 
-  //   newCompleteTodos.splice(i, 1);
+    newCompleteTodos.splice(i, 1);
 
-  //   setIncompleteTodos(newIncompleteTodos);
-  //   setCompleteTodos(newCompleteTodos);
-  // };
+    setIncompleteTodos(newIncompleteTodos);
+    setCompleteTodos(newCompleteTodos);
+  };
 
   return (
     <div>
       <h1>ToDoリスト</h1>
       <header>
-        <ul>
-          <li
-            onClick={() => {
-              setTab("all");
-            }}
-          >
-            すべて
-          </li>
-          <li
-            onClick={() => {
-              setTab("todo");
-            }}
-          >
-            作業中
-          </li>
-          <li
-            onClick={() => {
-              setTab("end");
-            }}
-          >
-            完了
-          </li>
-        </ul>
+        <table>
+          <tr>
+            <td>
+              <input
+                type="radio"
+                value="all"
+                onChange={handleChange}
+                checked={val === 'all'}
+                onClick={() => {
+                  setTab("all");
+                }}
+              />
+              すべて
+            </td>
+            <td>
+              <input
+                type="radio"
+                value="incomp"
+                onChange={handleChange}
+                checked={val === 'incomp'}
+                onClick={() => {
+                  setTab("todo");
+                }}
+              />
+              作業中
+            </td>
+            <td>
+              <input
+                type="radio"
+                value="comp"
+                onChange={handleChange}
+                checked={val === 'comp'}
+                onClick={() => {
+                  setTab("end");
+                }}
+              />
+              完了
+            </td>
+          </tr>
+        </table>
       </header>
       <hr />
       {(() => {
@@ -101,7 +127,7 @@ function App() {
                 <td>{todo}</td>
                 <td>
                   <button>作業中</button>
-                  <button>削除</button>
+                  <button onClick={() => onClickDelete(index)}>削除</button>
                 </td>
               </tr>
             );
